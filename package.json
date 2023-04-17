@@ -1,0 +1,29 @@
+{
+  "name": "project_nodejs",
+  "version": "1.0.0",
+  "description": "proyecto general del curso",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acalderonl1/project_nodejs.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js"
+  ],
+  "author": "Abdon Calderon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/acalderonl1/project_nodejs/issues"
+  },
+  "homepage": "https://github.com/acalderonl1/project_nodejs#readme",
+  "dependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

@@ -1,6 +1,15 @@
 import express, { Application, Request, Response } from "express"
 import fs from 'fs';
 
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    isAvailable: boolean;
+}
+
+type Products = Product[]
+
 const users = [
     { id: 0, name: 'John', active: true },
     { id: 1, name: 'John1', active: false },
@@ -8,6 +17,7 @@ const users = [
     { id: 3, name: 'John4', active: false },
 ]
 
+const products: Products = []
 
 class App {
     public app: Application
@@ -24,6 +34,14 @@ class App {
     }
 
     handleRoute() {
+        this.app.get("/productos", this.listProducts)
+        this.app.post("/productos", this.insertProduct)
+        this.app.get("/productos/:id", this.getOneProduct)
+        this.app.put("/productos/:id", this.updateProduct)
+        this.app.delete("/productos/:id", this.deleteProduct)
+
+
+
         this.app.post("/usuarios", this.listUsers)
         this.app.get("/usuarios", this.responseGET)
         this.app.get("/usuarios/html", this.responseHTML)
@@ -31,6 +49,60 @@ class App {
         this.app.get("/usuarios/pdf", this.responsePDF)
         this.app.post("/usuarios/insert", this.insertUser)
         this.app.get("/usuarios/:active", this.filterUserByActive)
+    }
+
+    listProducts(req: Request, res: Response) {
+        if (products.length == 0) {
+            return res.status(404).send("Product is not found")
+        }
+        res.json(products)
+    }
+
+    getOneProduct(req: Request, res: Response) {
+        const { id } = req.params
+        const product = products.find(product => product.id == +id)
+        if (product) {
+            return res.json(product)
+        }
+        res.status(404).send("Product is not found")
+
+
+    }
+
+
+    /* CREATE A CRUD FOR PRODUCT */
+    insertProduct(req: Request, res: Response) {
+        const { name, price, isAvailable } = req.body
+        const product = { id: products.length, name, price, isAvailable }
+        products.push(product)
+        res.json(product)
+    }
+
+    updateProduct(req: Request, res: Response) {
+        const { id } = req.params
+        const { name, price, isAvailable } = req.body
+        const product = products.find(product => product.id == +id)
+        if (product) {
+            product.name = name
+            product.price = price
+            product.isAvailable = isAvailable
+            res.json(product)
+        } else {
+            res.status(404).send("Product is not found")
+        }
+    }
+
+    deleteProduct(req: Request, res: Response) {
+        const { id } = req.params
+        const product = products.find(product => product.id == +id)
+
+        if (product) {
+            const index = products.indexOf(product)
+            products.splice(index, 1)
+            return res.json(product)
+        }
+
+        res.status(404).send("Product is not found")
     }
 
     insertUser(req: Request, res: Response) {
@@ -45,6 +117,9 @@ class App {
         /* res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify(users)); */
     }
+
+
+
 
     filterUserByActive(req: Request, res: Response) {
         //const active = req.params.active
